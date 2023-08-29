@@ -7,5 +7,5 @@ exports.PORT = process.env.PORT || 3000;
 exports.DB_HOST = process.env.DB_HOST || "localHost";
 exports.DB_PORT = process.env.DB_PORT || 3306;
 exports.DB_USER = process.env.DB_USER || "root";
-exports.DB_PASSWORD = process.env.DB_PASSWORD || "alfaguara12";
+exports.DB_PASSWORD = process.env.DB_PASSWORD;
 exports.DB_DATABASE = process.env.DB_DATABASE || "page_recipes_db";
