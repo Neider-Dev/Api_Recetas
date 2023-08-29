@@ -29,21 +29,40 @@ class RecipesController {
     getOne(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            try {
-                const pool = yield (0, database_1.connect)();
-                const recipe = yield pool.query("SELECT * FROM recipes WHERE id_recipe = ?", [id]);
-                if (recipe.length > 0) {
-                    return res.json(JSON.parse(JSON.stringify(recipe[0]).slice(1, -1)));
+            const pool = yield (0, database_1.connect)();
+            pool.query("SELECT * FROM recipes WHERE id_recipe = ?", [id])
+                .then((response) => {
+                if (response.length > 0) {
+                    return res.json(JSON.parse(JSON.stringify(response[0]).slice(1, -1)));
                 }
-                res.status(404).json({ text: `The recipe ${[id]} doesn't exist` });
-            }
-            catch (error) {
-                res.status(500).json({
-                    message: "Something goes wrong",
+            })
+                .catch(() => {
+                res.status(404).json({
+                    text: `The recipe ${[id]} doesn't exist`,
                 });
-            }
+            });
         });
     }
+    // public async getOne(req: Request, res: Response): Promise<any> {
+    // 	const { id } = req.params;
+    // 	try {
+    // 		const pool = await connect();
+    // 		const recipe = await pool.query(
+    // 			"SELECT * FROM recipes WHERE id_recipe = ?",
+    // 			[id],
+    // 		);
+    // 		if (recipe.length > 0) {
+    // 			return res.json(
+    // 				JSON.parse(JSON.stringify(recipe[0]).slice(1, -1)),
+    // 			);
+    // 		}
+    // 		res.status(404).json({ text: `The recipe ${[id]} doesn't exist` });
+    // 	} catch (error) {
+    // 		res.status(500).json({
+    // 			message: "Something goes wrong",
+    // 		});
+    // 	}
+    // }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -60,17 +79,14 @@ class RecipesController {
     }
     delete(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { id } = req.params;
-                const pool = yield (0, database_1.connect)();
-                yield pool.query("DELETE FROM recipes WHERE id_recipe = ?", [id]);
-                res.json({ message: `The recipe ${req.params.id} was deleted` });
-            }
-            catch (error) {
-                res.status(500).json({
-                    message: "Something goes wrong",
-                });
-            }
+            const { id } = req.params;
+            const pool = yield (0, database_1.connect)();
+            yield pool
+                .query("DELETE FROM recipes WHERE id_recipe = ?", [id])
+                .then(() => res.json({
+                message: `The recipe ${req.params.id} was deleted`,
+            }))
+                .catch((error) => res.json({ message: error }));
         });
     }
     update(req, res) {
