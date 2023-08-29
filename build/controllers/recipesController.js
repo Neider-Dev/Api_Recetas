@@ -14,9 +14,16 @@ const database_1 = require("../database");
 class RecipesController {
     list(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const pool = yield (0, database_1.connect)();
-            const posts = yield pool.query("SELECT * FROM recipes");
-            res.json(posts[0]);
+            try {
+                const pool = yield (0, database_1.connect)();
+                const posts = yield pool.query("SELECT * FROM recipes");
+                res.json(posts[0]);
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong whit obtain recipes",
+                });
+            }
         });
     }
     getOne(req, res) {
@@ -39,28 +46,49 @@ class RecipesController {
     }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const pool = yield (0, database_1.connect)();
-            yield pool.query("INSERT INTO recipes set ?", [req.body]);
-            res.json({ message: "Recipe Saved" });
+            try {
+                const pool = yield (0, database_1.connect)();
+                yield pool.query("INSERT INTO recipes set ?", [req.body]);
+                res.json({ message: "Recipe Saved" });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
     delete(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
-            yield pool.query("DELETE FROM recipes WHERE id_recipe = ?", [id]);
-            res.json({ message: `The recipe ${req.params.id} was deleted` });
+            try {
+                const { id } = req.params;
+                const pool = yield (0, database_1.connect)();
+                yield pool.query("DELETE FROM recipes WHERE id_recipe = ?", [id]);
+                res.json({ message: `The recipe ${req.params.id} was deleted` });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
-            yield pool.query("UPDATE recipes SET ? WHERE id_recipe = ?", [
-                req.body,
-                id,
-            ]);
-            res.json({ message: `The recipe ${req.params.id} was updated` });
+            try {
+                const { id } = req.params;
+                const pool = yield (0, database_1.connect)();
+                yield pool.query("UPDATE recipes SET ? WHERE id_recipe = ?", [
+                    req.body,
+                    id,
+                ]);
+                res.json({ message: `The recipe ${req.params.id} was updated` });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
 }

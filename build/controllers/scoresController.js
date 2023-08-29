@@ -14,47 +14,82 @@ const database_1 = require("../database");
 class ScoresController {
     list(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
-            const posts = yield pool.query("SELECT * FROM scores WHERE id_recipe = ?", [id]);
-            res.json(posts[0]);
+            try {
+                const { id } = req.params;
+                const pool = yield (0, database_1.connect)();
+                const posts = yield pool.query("SELECT * FROM scores WHERE id_recipe = ?", [id]);
+                res.json(posts[0]);
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
     getOne(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
-            const score = yield pool.query("SELECT * FROM scores WHERE id_score = ?", [id]);
-            if (score.length > 0) {
-                return res.json(JSON.parse(JSON.stringify(score[0]).slice(1, -1)));
+            try {
+                const { id } = req.params;
+                const pool = yield (0, database_1.connect)();
+                const score = yield pool.query("SELECT * FROM scores WHERE id_score = ?", [id]);
+                if (score.length > 0) {
+                    return res.json(JSON.parse(JSON.stringify(score[0]).slice(1, -1)));
+                }
+                res.status(404).json({ text: `The score ${[id]} doesn't exist` });
             }
-            res.status(404).json({ text: `The score ${[id]} doesn't exist` });
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const pool = yield (0, database_1.connect)();
-            yield pool.query("INSERT INTO scores set ?", [req.body]);
-            res.json({ message: "Score Saved" });
+            try {
+                const pool = yield (0, database_1.connect)();
+                yield pool.query("INSERT INTO scores set ?", [req.body]);
+                res.json({ message: "Score Saved" });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
     delete(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
-            yield pool.query("DELETE FROM scores WHERE id_score = ?", [id]);
-            res.json({ message: `The score ${req.params.id} was deleted` });
+            try {
+                const { id } = req.params;
+                const pool = yield (0, database_1.connect)();
+                yield pool.query("DELETE FROM scores WHERE id_score = ?", [id]);
+                res.json({ message: `The score ${req.params.id} was deleted` });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
-            yield pool.query("UPDATE scores SET ? WHERE id_score = ?", [
-                req.body,
-                id,
-            ]);
-            res.json({ message: `The score ${req.params.id} was updated` });
+            try {
+                const { id } = req.params;
+                const pool = yield (0, database_1.connect)();
+                yield pool.query("UPDATE scores SET ? WHERE id_score = ?", [
+                    req.body,
+                    id,
+                ]);
+                res.json({ message: `The score ${req.params.id} was updated` });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
 }

@@ -15,8 +15,8 @@ class CommentsController {
     list(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
             try {
+                const pool = yield (0, database_1.connect)();
                 const posts = yield pool.query("SELECT * FROM comments WHERE id_recipe = ?", [id]);
                 res.json(posts[0]);
             }
@@ -30,38 +30,66 @@ class CommentsController {
     getOne(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
-            const comment = yield pool.query("SELECT * FROM comments WHERE id_comment = ?", [id]);
-            if (comment.length > 0) {
-                return res.json(JSON.parse(JSON.stringify(comment[0]).slice(1, -1)));
+            try {
+                const pool = yield (0, database_1.connect)();
+                const comment = yield pool.query("SELECT * FROM comments WHERE id_comment = ?", [id]);
+                if (comment.length > 0) {
+                    return res.json(JSON.parse(JSON.stringify(comment[0]).slice(1, -1)));
+                }
+                res.status(404).json({ text: `The comment ${[id]} doesn't exist` });
             }
-            res.status(404).json({ text: `The comment ${[id]} doesn't exist` });
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const pool = yield (0, database_1.connect)();
-            yield pool.query("INSERT INTO comments set ?", [req.body]);
-            res.json({ message: "Comment Saved" });
+            try {
+                const pool = yield (0, database_1.connect)();
+                yield pool.query("INSERT INTO comments set ?", [req.body]);
+                res.json({ message: "Comment Saved" });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
     delete(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
-            yield pool.query("DELETE FROM comments WHERE id_comment = ?", [id]);
-            res.json({ message: `The comment ${req.params.id} was deleted` });
+            try {
+                const { id } = req.params;
+                const pool = yield (0, database_1.connect)();
+                yield pool.query("DELETE FROM comments WHERE id_comment = ?", [id]);
+                res.json({ message: `The comment ${req.params.id} was deleted` });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const pool = yield (0, database_1.connect)();
-            yield pool.query("UPDATE comments SET ? WHERE id_comment = ?", [
-                req.body,
-                id,
-            ]);
-            res.json({ message: `The comment ${req.params.id} was updated` });
+            try {
+                const { id } = req.params;
+                const pool = yield (0, database_1.connect)();
+                yield pool.query("UPDATE comments SET ? WHERE id_comment = ?", [
+                    req.body,
+                    id,
+                ]);
+                res.json({ message: `The comment ${req.params.id} was updated` });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
 }

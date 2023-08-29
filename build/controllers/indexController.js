@@ -13,7 +13,14 @@ exports.indexController = void 0;
 class IndexController {
     index(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            res.json({ text: "The api is /api/recipes" });
+            try {
+                res.json({ text: "The api is /api/recipes" });
+            }
+            catch (error) {
+                res.status(500).json({
+                    message: "Something goes wrong",
+                });
+            }
         });
     }
 }
