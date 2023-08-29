@@ -8,16 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connect = void 0;
 const promise_1 = require("mysql2/promise");
-const keys_1 = __importDefault(require("./keys"));
+const config_1 = require("./config");
 function connect() {
     return __awaiter(this, void 0, void 0, function* () {
-        const pool = (0, promise_1.createPool)(keys_1.default.database);
+        const pool = (0, promise_1.createPool)({
+            host: config_1.DB_HOST,
+            user: config_1.DB_USER,
+            password: config_1.DB_PASSWORD,
+            database: config_1.DB_DATABASE,
+            port: parseInt(`${config_1.DB_PORT}`),
+        });
         pool.getConnection().then((connection) => {
             pool.releaseConnection(connection);
             console.log("DB is connected");
